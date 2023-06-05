@@ -294,15 +294,15 @@ function AddContract({ onContractAdded }: AddContractProps) {
     const [deployedAddress, setDeployedAddress] = useState('');
     const [contractAbi, setContractAbi] = useState('');
     const [deploymentChain, setDeploymentChain] = useState('');
-  
+    
     const handleClick = () => {
-      const contract: Contract = { deployedAddress, contractAbi, deploymentChain };
-      onContractAdded(contract);
-      setDeployedAddress('');
-      setContractAbi('');
-      setDeploymentChain('');
+        const contract: Contract = { deployedAddress, contractAbi, deploymentChain };
+        onContractAdded(contract);
+        setDeployedAddress('');
+        setContractAbi('');
+        setDeploymentChain('');
     };
-
+    
     return (
         <div>
           <input type="text" placeholder="Deployed Address" onChange={e => setDeployedAddress(e.target.value)} />
@@ -312,10 +312,16 @@ function AddContract({ onContractAdded }: AddContractProps) {
         </div>
       );
     }
-
+    
+    
 function App() {
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
+
+  const handleAddressClick = (contract: Contract) => {
+    setSelectedContract(contract);
+  };
 
   const handleContractAdded = (contract: Contract) => {
     setContracts([...contracts, contract]);
@@ -337,11 +343,31 @@ function App() {
             ))}
           </div>
         );
-      // ... other cases for 'Decode', 'Get notifs', etc.
+        case 'Decode':
+            return (
+              <div>
+                <h3>Deployed Addresses:</h3>
+                {contracts.map((contract, index) => (
+                  <button key={index} onClick={() => handleAddressClick(contract)}>
+                    {contract.deployedAddress}
+                  </button>
+                ))}
+                {selectedContract && (
+                  <div>
+                    <h3>Available functions in {selectedContract.deployedAddress}:</h3>
+                    {selectedContract.contractAbi.split(',').map((fnName, index) => (
+                      <p key={index}>{fnName}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+      // ... other cases for 'Get notifs', etc.
       default:
         return null;
     }
   };
+  
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
