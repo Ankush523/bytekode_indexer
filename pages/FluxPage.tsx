@@ -279,7 +279,7 @@ import React, { useState } from 'react';
 
 interface Contract {
     deployedAddress: string;
-    contractAbi: string;
+    contractAbi: string; // JSON string of contract ABI
     deploymentChain: string;
   }
   
@@ -337,32 +337,35 @@ function App() {
             {contracts.map((contract, index) => (
               <div key={index}>
                 <p>Deployed Address: {contract.deployedAddress}</p>
-                <p>Contract ABI: {contract.contractAbi}</p>
-                <p>Deployment Chain: {contract.deploymentChain}</p>
+                {/* <p>Contract ABI: {contract.contractAbi}</p>
+                <p>Deployment Chain: {contract.deploymentChain}</p> */}
               </div>
             ))}
           </div>
         );
         case 'Decode':
-            return (
-              <div>
-                <h3>Deployed Addresses:</h3>
-                {contracts.map((contract, index) => (
-                  <button key={index} onClick={() => handleAddressClick(contract)}>
-                    {contract.deployedAddress}
-                  </button>
-                ))}
-                {selectedContract && (
-                  <div>
-                    <h3>Available functions in {selectedContract.deployedAddress}:</h3>
-                    {selectedContract.contractAbi.split(',').map((fnName, index) => (
-                      <p key={index}>{fnName}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-      // ... other cases for 'Get notifs', etc.
+      return (
+        <div>
+          <h3>Deployed Addresses:</h3>
+          {contracts.map((contract, index) => (
+            <button key={index} onClick={() => handleAddressClick(contract)}>
+              {contract.deployedAddress}
+            </button>
+          ))}
+          {selectedContract && (
+            <div>
+              <h3>Available functions in {selectedContract.deployedAddress}:</h3>
+              {JSON.parse(selectedContract.contractAbi)
+                .filter((entry : any) => entry.type === 'function')
+                .map((func : any, index : any) => (
+                  <p key={index}>{`${func.name}(${func.inputs.map((input : any) => input.type).join(', ')})`}</p>
+                ))
+              }
+            </div>
+          )}
+        </div>
+      );
+
       default:
         return null;
     }
