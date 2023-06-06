@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import crypto from 'crypto';
+import axios from 'axios';
 
 interface Contract {
     deployedAddress: string;
@@ -22,17 +23,43 @@ function AddContract({ onContractAdded }: AddContractProps) {
     const [showPopup, setShowPopup] = useState(false);
     const [apiKey, setApiKey] = useState('');
 
-    const handleClick = () => {
-        const newApiKey = crypto.randomBytes(20).toString('hex'); // generate API Key
-        setApiKey(newApiKey);
-        const contract: Contract = { deployedAddress, contractAbi, deploymentChain, apiKey: newApiKey };
-        onContractAdded(contract);
-        setDeployedAddress('');
-        setContractAbi('');
-        setDeploymentChain('');
-        setShowPopup(true);
-        setTimeout(() => setShowPopup(false), 5000); // hide the popup after 5 seconds
-    };
+    // AddContract.tsx
+
+const handleClick = async () => {
+  const newApiKey = crypto.randomBytes(20).toString('hex'); // generate API Key
+  setApiKey(newApiKey);
+  const contract: Contract = { deployedAddress, contractAbi, deploymentChain, apiKey: newApiKey };
+  
+  try {
+      const response = await axios.post('http://localhost:3000/contracts', contract);
+      if (response.data) {
+          alert(response.data.message);
+          if (response.data.message === 'Contract added successfully') {
+              onContractAdded(contract);
+              setDeployedAddress('');
+              setContractAbi('');
+              setDeploymentChain('');
+              setShowPopup(true);
+              setTimeout(() => setShowPopup(false), 5000); // hide the popup after 5 seconds
+          }
+      }
+  } catch (error : any) {
+    console.error(error);
+    if (error.response) {
+        alert(error.response.data.message);
+    } else if (error.request) {
+        // The request was made but no response was received
+        console.error(error.request);
+        alert('No response received from the server. Please check the server.');
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error', error.message);
+        alert('An error occurred while adding the contract');
+    }
+}
+
+};
+
 
     return (
         <div className='flex flex-col'>
