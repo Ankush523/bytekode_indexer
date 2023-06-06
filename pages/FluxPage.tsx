@@ -10,7 +10,7 @@ interface AddContractProps {
 }
   
 
-const SIDEBAR = ['Add Contract', 'My Contracts', 'Decode', 'Get notifs'];
+const SIDEBAR = ['Add Contract', 'Contracts', 'Decode', 'Get notifs'];
 
 function AddContract({ onContractAdded }: AddContractProps) {
     const [deployedAddress, setDeployedAddress] = useState('');
@@ -57,34 +57,41 @@ function App() {
     switch (activeItem) {
       case 'Add Contract':
         return <AddContract onContractAdded={handleContractAdded} />;
-      case 'My Contracts':
-        return (
-          <div>
-            {contracts.map((contract, index) => (
-              <div key={index}>
-                <p>Deployed Address: {contract.deployedAddress}</p>
-                {/* <p>Contract ABI: {contract.contractAbi}</p>
-                <p>Deployment Chain: {contract.deploymentChain}</p> */}
+        case 'Contracts':
+            return (
+              <div className="flex flex-col">
+                <label className="text-3xl mb-[30px]">My Contracts</label>
+                <div className="flex mb-4">
+                  <div className="w-1/2 text-xl">Address</div>
+                  <div className="w-1/2 text-xl">Chain</div>
+                </div>
+                {contracts.map((contract, index) => (
+                  <div key={index} className="flex mb-1 py-[5px]">
+                    <div className="w-1/2">{contract.deployedAddress}</div>
+                    <div className="w-1/2">{contract.deploymentChain}</div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        );
+            )          
         case 'Decode':
       return (
-        <div>
-          <h3>Deployed Addresses:</h3>
-          {contracts.map((contract, index) => (
-            <button key={index} onClick={() => handleAddressClick(contract)}>
-              {contract.deployedAddress}
-            </button>
-          ))}
+        <div className='flex flex-col'>
+          <label className='text-3xl mb-[10px]'>Decode Functions</label>
+          <label className='text-md mb-[10px]'>Select Contract</label>
+          <div  className='flex flex-row space-x-10 mb-[40px]'>
+            {contracts.map((contract, index) => (
+                <button key={index} onClick={() => handleAddressClick(contract)} className='bg-white text-black p-[4px] rounded-md'>
+                    {contract.deployedAddress}
+                </button>
+            ))}
+          </div>
+          <label className='mb-[10px]'>Available functions in {selectedContract?.deployedAddress} :</label>
           {selectedContract && (
             <div>
-              <h3>Available functions in {selectedContract.deployedAddress}:</h3>
               {JSON.parse(selectedContract.contractAbi)
                 .filter((entry : any) => entry.type === 'function')
                 .map((func : any, index : any) => (
-                  <p key={index}>{`${func.name}(${func.inputs.map((input : any) => input.type).join(', ')})`}</p>
+                  <p className='bg-gray-700 mb-[5px] w-[fit-content] p-[2px] rounded-md' key={index}>{`${func.name}(${func.inputs.map((input : any) => input.type).join(', ')})`}</p>
                 ))
               }
             </div>
