@@ -29,12 +29,12 @@ function AddContract({ onContractAdded }: AddContractProps) {
         <div className='flex flex-col'>
             <label className='text-3xl mb-[20px]'>Add Contract Details</label>
             <label className='text-md mb-[5px]'>Deployed Address</label>
-            <input type="text" onChange={e => setDeployedAddress(e.target.value)}  className='rounded-md h-[40px] bg-white mb-[20px] text-black'/>
+            <input type="text" onChange={e => setDeployedAddress(e.target.value)} placeholder='0xabcd...' className='rounded-md h-[40px] bg-white mb-[20px] text-black'/>
             <label className='text-md mb-[5px]'>Contract ABI</label>
             <textarea onChange={e => setContractAbi(e.target.value)} className='rounded-md h-[200px] bg-white mb-[20px] text-black'></textarea>
             <label className='text-md mb-[5px]'>Deployment Chain</label>
-            <input type="text" onChange={e => setDeploymentChain(e.target.value)} className='rounded-md h-[40px] bg-white mb-[20px] text-black'/>
-            <button onClick={handleClick}>Add</button>
+            <input type="text" onChange={e => setDeploymentChain(e.target.value)} placeholder='chain' className='rounded-md h-[40px] bg-white mb-[50px] text-black'/>
+            <button className='rounded-md bg-white text-black w-[fit-content] mx-[46%] px-[4%] py-[8px]' onClick={handleClick}>Add</button>
         </div>
       );
     }
